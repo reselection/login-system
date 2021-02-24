@@ -57,16 +57,82 @@ def create_account():
     time.sleep(3)
     start_menu()
 
-def login(username, password):
+def login():
     """
     Talks to the database to log the user in if credentials are correct.
     """
-    pass
+    conndb = sqlite3.connect('data/login-system.db')
+    cursor = conndb.cursor()
+
+    print("Enter 'return' to go to main menu.\nEnter quit to exit.")
+
+    username = input("Enter username: ")
+    if username == 'quit':
+        quit()
+    elif username == 'return':
+        startmenu()
+    password = input("Enter password: ")
+    if password == 'quit':
+        quit()
+    elif password == 'return':
+        start_menu()
+
+    cursor.execute("SELECT * FROM user_data")
+    match = cursor.fetchall()
+    
+    
+    for data in match:
+        x = base64.b64decode(data[1])
+        
+        if data[0] == username and x.decode() == password:
+            print("You've logged in\nRedirecting...")
+            time.sleep(3)
+            user_panel(username)
+        elif data[0] != username and x.decode() != password:
+            continue
+        else:
+            print("Failed login")
+            main_menu()
+
 
 def data_storage(data):
     """
     After logging in this function will store desired data for user.
     """
+    pass
+
+def user_panel(username):
+    x = username
+    
+    print(f"Welcome {username}")
+    print("Type info to see all commands")
+    
+    request = input(f"{username}: ")
+    if request == 'info':
+        print("(1)Store info.\n(2)Retrieve data.\n(3)Change password.\n(4)Log out.\n(5)Close program")
+        user_panel(x)
+    elif request == '1':
+        print("1")
+    elif request == '2':
+        print("2")
+    elif request == '3':
+        print("3")
+    elif request == '4':
+        print("Logging out...")
+        time.sleep(1)
+        start_menu()
+    elif request == '5':
+        print("Closing now...")
+        time.sleep(1)
+        quit()
+    else:
+        print("Not a valid command")
+        time.sleep(1)
+        user_panel(x)
+
+
+def admin_panel():
+    '''Panel for admin'''
     pass
 
 start_menu()
