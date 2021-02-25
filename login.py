@@ -2,8 +2,16 @@
 import sqlite3
 import base64
 import time
+import subprocess
+import os
 
 def start_menu():
+    if os.name == 'posix':
+        subprocess.Popen('clear')
+        time.sleep(1)
+    elif os.name == 'nt':
+        subprocess.Popen('test&cls')
+        time.sleep(1)
     print("Welcome to log-database")
     print("(1) Login")
     print("(2) Create account")
@@ -83,16 +91,16 @@ def login():
     
     for data in match:
         x = base64.b64decode(data[1])
-        
-        if data[0] == username and x.decode() == password:
+        if username not in match:
+            print("Account not found\nReturning...")
+            time.sleep(1)
+            login()
+        elif data[0] == username and x.decode() == password:
             print("You've logged in\nRedirecting...")
             time.sleep(3)
             user_panel(username)
-        elif data[0] != username and x.decode() != password:
-            continue
         else:
-            print("Failed login")
-            main_menu()
+            continue
 
 
 def data_storage(data):
@@ -133,6 +141,8 @@ def user_panel(username):
 
 def admin_panel():
     '''Panel for admin'''
-    pass
+    print("Type 'info' for help")
+    request = input(": ")
+    admin_panel()
 
 start_menu()
