@@ -115,21 +115,39 @@ def user_panel(username):
     """
     User can view options here and issue commands to change password, store info or retrieve it, and logout/close the program
     """
-    x = username
-    
+    conndb = sqlite3.connect('data/login-system.db')
+    cursor = conndb.cursor()
+
     print(f"Welcome {username}")
     print("Type info to see all commands")
     
     request = input(f"{username}: ")
     if request == 'info':
         print("(1)Store info.\n(2)Retrieve data.\n(3)Change password.\n(4)Log out.\n(5)Close program")
-        user_panel(x)
+        user_panel(username)
     elif request == '1':
         print("1")
+        user_panel(username)
     elif request == '2':
         print("2")
     elif request == '3':
-        print("3")
+        cursor.execute("SELECT * FROM user_data")
+        match = cursor.fetchall()
+        old_password = input("Enter old password: ")
+        for data in match:
+            x = base64.b64decode(data[1])
+            if username not in data:
+                continue
+            elif data[0] == username and x.decode() == old_password:
+                new_password =          input("Enter new password: ")
+                confirm_new_password =  input("Enter new password: ")
+                if new_password == confirm_new_password:
+                    print(f"New password changed to {new_password}")
+                    cursor.execute("")
+                    time.sleep(1)
+                    user_panel(username)
+            print("Wrong password, try again.")
+            user_panel(username)
     elif request == '4':
         print("Logging out...")
         time.sleep(1)
@@ -141,7 +159,7 @@ def user_panel(username):
     else:
         print("Not a valid command")
         time.sleep(1)
-        user_panel(x)
+        user_panel(username)
 
 
 def admin_panel():
