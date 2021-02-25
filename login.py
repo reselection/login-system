@@ -86,21 +86,23 @@ def login():
         start_menu()
 
     cursor.execute("SELECT * FROM user_data")
-    match = cursor.fetchall()
-    
+    match = cursor.fetchall() 
     
     for data in match:
         x = base64.b64decode(data[1])
-        if username not in match:
-            print("Account not found\nReturning...")
-            time.sleep(1)
-            login()
+        if username not in data:
+            continue
         elif data[0] == username and x.decode() == password:
             print("You've logged in\nRedirecting...")
             time.sleep(3)
             user_panel(username)
         else:
-            continue
+            print("Account not found")
+            time.sleep(1)
+            login()
+        print("Account not found")
+        time.sleep(1)
+        login()
 
 
 def data_storage(data):
@@ -110,6 +112,9 @@ def data_storage(data):
     pass
 
 def user_panel(username):
+    """
+    User can view options here and issue commands to change password, store info or retrieve it, and logout/close the program
+    """
     x = username
     
     print(f"Welcome {username}")
