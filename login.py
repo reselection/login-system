@@ -25,7 +25,7 @@ def start_menu():
         quit()
     else:
         print(f"{start} is not a valid option, please try again")
-        time.sleep(3)
+        time.sleep(1)
         start_menu()
 
 def create_account():
@@ -53,7 +53,7 @@ def create_account():
     for data in match:
         if data[0] == username:
             print("Username is taken\nTry again.")
-            time.sleep(3)
+            time.sleep(1)
             create_account()
      
     
@@ -92,6 +92,10 @@ def login():
         x = base64.b64decode(data[1])
         if username not in data:
             continue
+        elif data[0] == 'admin' and x.decode() == password:
+            print("Welcome, Admin.")
+            time.sleep(2)
+            admin_panel()
         elif data[0] == username and x.decode() == password:
             print("You've logged in\nRedirecting...")
             time.sleep(3)
@@ -142,8 +146,13 @@ def user_panel(username):
                 new_password =          input("Enter new password: ")
                 confirm_new_password =  input("Enter new password: ")
                 if new_password == confirm_new_password:
-                    print(f"New password changed to {new_password}")
-                    cursor.execute("")
+                    new_encryption_password = base64.b64encode(new_password.encode('utf-8'))
+                    print(f"user:{username} password:{new_encryption_password}")
+                    time.sleep(1)
+                    cursor.execute("UPDATE user_data SET password = (?) WHERE user = (?) AND password = (?)", (new_encryption_password, username,  base64.b64encode(old_password.encode('utf-8'))))
+                    conndb.commit()
+                    conndb.close()
+                    print("Password changed")
                     time.sleep(1)
                     user_panel(username)
             print("Wrong password, try again.")
@@ -161,11 +170,12 @@ def user_panel(username):
         time.sleep(1)
         user_panel(username)
 
-
 def admin_panel():
     '''Panel for admin'''
     print("Type 'info' for help")
     request = input(": ")
+    if request == 'info':
+        print('(1):Change password')
     admin_panel()
 
 start_menu()

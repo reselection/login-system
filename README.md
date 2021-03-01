@@ -6,7 +6,7 @@
  - https://docs.python.org/3/library/sqlite3.html
 
 ### Todo:
- - Add a password changer in user panel
+ - Add a password changer in user panel /Done
  - Create the admin panel
  - Admin function to manage accounts
  - Create function for user to store data  
