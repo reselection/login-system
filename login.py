@@ -172,10 +172,38 @@ def user_panel(username):
 
 def admin_panel():
     '''Panel for admin'''
+    conndb = sqlite3.connect('data/login-system.db')
+    cursor = conndb.cursor()
+   
+    cursor.execute("SELECT user,password FROM user_data")
+    alldata = cursor.fetchall()
+
     print("Type 'info' for help")
     request = input(": ")
     if request == 'info':
         print('(1):Change password')
+        print("(2):View database")
+        print("(3) Add user")
+        print("(x) Quit")
+    elif request == '1':
+        pass
+    elif request == '2':
+        for user in alldata:
+            print(user)
+    elif request == '3':
+        username    = input("Enter a username: ")
+        password_f  = input("Enter password: ")
+        password_c  = input("Enter password again: ")
+        if password_f == password_c:
+            encrypted_password = base64.b64encode(password_c.encode('utf-8'))
+            cursor.execute("INSERT INTO user_data(user,password) VALUES(?,?)",(username,encrypted_password))
+            conndb.commit()
+    elif request == '4':
+        pass
+    elif request.upper() ==  'X':
+        quit()
+
+
     admin_panel()
 
 start_menu()
